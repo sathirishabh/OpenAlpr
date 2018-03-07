@@ -8,6 +8,7 @@ public interface AppConstants {
     static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_GALLERY_CAPTURE = 2;
     static final String RUNTIME_DATA_DIR_ASSET = "runtime_data";
     static final String ANDROID_DATA_DIR = "/data/data/org.openalpr.app";
     static final String OPENALPR_CONF_FILE = "openalpr.conf";

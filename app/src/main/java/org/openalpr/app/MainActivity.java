@@ -1,6 +1,5 @@
 package org.openalpr.app;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -12,7 +11,10 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -37,7 +39,7 @@ import java.util.List;
 import static org.openalpr.app.AppConstants.*;
 
 
-public class MainActivity extends Activity implements AsyncListener<AlprResult> {
+public class MainActivity extends AppCompatActivity implements AsyncListener<AlprResult> {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
@@ -51,13 +53,6 @@ public class MainActivity extends Activity implements AsyncListener<AlprResult> 
 
     private ProgressDialog progressDialog;
 
-    Button.OnClickListener takePhotoBtnClickListener = new Button.OnClickListener(){
-
-        @Override
-        public void onClick(View view) {
-            dispatchTakePictureIntent();
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +86,13 @@ public class MainActivity extends Activity implements AsyncListener<AlprResult> 
 
         Button takePicBtn = (Button)findViewById(R.id.button);
 
-        setBtnListenerOrDisable(takePicBtn, takePhotoBtnClickListener,
-                MediaStore.ACTION_IMAGE_CAPTURE);
+        Button.OnClickListener takePhotoBtnClickListener = new Button.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                dispatchTakePictureIntent();
+            }
+        };
     }
 
 
