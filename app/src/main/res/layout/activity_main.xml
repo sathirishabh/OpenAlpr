@@ -65,7 +65,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:id="@+id/processingTimeId"
-                android:ems="10" android:inputType="text"
+                android:ems="10"
+                android:inputType="text"
                 android:layout_gravity="center_vertical" />
 
 
