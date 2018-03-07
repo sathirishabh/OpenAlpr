@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements AsyncListener<Alp
 
     private ProgressDialog progressDialog;
     String userChoosenTask;
+    Bitmap bitmap;
+
 
 
     @Override
@@ -293,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements AsyncListener<Alp
         bmOptions.inPurgeable = true;
 
 		/* Decode the JPEG file into a Bitmap */
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+		bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
 		/* Associate the Bitmap to the ImageView */
         mImageView.setImageBitmap(bitmap);
@@ -324,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements AsyncListener<Alp
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
+
         startActivityForResult(Intent.createChooser(intent, "Select File"),REQUEST_GALLERY_CAPTURE);
     }
 
@@ -332,25 +335,72 @@ public class MainActivity extends AppCompatActivity implements AsyncListener<Alp
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK) {
 
-            String openAlprConfFile = ANDROID_DATA_DIR + File.separatorChar +
-                    RUNTIME_DATA_DIR_ASSET + File.separatorChar +OPENALPR_CONF_FILE;
-            handleBigCameraPhoto();
-            String parameters[] = {"us", "", this.mCurrentPhotoPath, openAlprConfFile, "1"};
-            Bundle args = new Bundle();
-            args.putStringArray(ALPR_ARGS, parameters);
-            AlprFragment alprFragment = (AlprFragment)getFragmentManager()
-                    .findFragmentByTag(ALPR_FRAGMENT_TAG);
-
-            if(alprFragment == null){
-                alprFragment = new AlprFragment();
-                alprFragment.setArguments(args);
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(alprFragment, ALPR_FRAGMENT_TAG);
-                transaction.commitAllowingStateLoss();
-            }
+            if (requestCode == REQUEST_GALLERY_CAPTURE)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_IMAGE_CAPTURE)
+                onCaptureImageResult();
         }
     }
+    public void onCaptureImageResult() {
+        String openAlprConfFile = ANDROID_DATA_DIR + File.separatorChar +
+                RUNTIME_DATA_DIR_ASSET + File.separatorChar + OPENALPR_CONF_FILE;
+        handleBigCameraPhoto();
+        String parameters[] = {"us", "", this.mCurrentPhotoPath, openAlprConfFile, "1"};
+        Bundle args = new Bundle();
+        args.putStringArray(ALPR_ARGS, parameters);
+        AlprFragment alprFragment = (AlprFragment) getFragmentManager()
+                .findFragmentByTag(ALPR_FRAGMENT_TAG);
+
+        if (alprFragment == null) {
+            alprFragment = new AlprFragment();
+            alprFragment.setArguments(args);
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.add(alprFragment, ALPR_FRAGMENT_TAG);
+            transaction.commitAllowingStateLoss();
+        }
+
+
+    }
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+        Bitmap bm=null;
+        Uri loc=data.getData();
+        String CurrentPath=loc.getPath();
+        if (data != null) {
+            try {
+
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                bm.sameAs(bitmap);
+
+                String openAlprConfFile = ANDROID_DATA_DIR + File.separatorChar +
+                        RUNTIME_DATA_DIR_ASSET + File.separatorChar + OPENALPR_CONF_FILE;
+                handleBigCameraPhoto();
+                String parameters[] = {"us", "", CurrentPath, openAlprConfFile, "1"};
+                Bundle args = new Bundle();
+                args.putStringArray(ALPR_ARGS, parameters);
+                AlprFragment alprFragment = (AlprFragment) getFragmentManager()
+                        .findFragmentByTag(ALPR_FRAGMENT_TAG);
+
+                if (alprFragment == null) {
+                    alprFragment = new AlprFragment();
+                    alprFragment.setArguments(args);
+
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.add(alprFragment, ALPR_FRAGMENT_TAG);
+                    transaction.commitAllowingStateLoss();
+                }
+
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        mImageView.setImageBitmap(bm);
+        mImageView.setVisibility(View.VISIBLE);
+    }
+
 
 
     public static boolean isIntentAvailable(Context context, String action) {
