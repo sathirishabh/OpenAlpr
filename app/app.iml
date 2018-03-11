@@ -117,6 +117,7 @@
     <orderEntry type="library" name="com.android.support:support-v4-23.4.0" level="project" />
     <orderEntry type="library" name="com.android.support:appcompat-v7-23.4.0" level="project" />
     <orderEntry type="library" name="com.android.support:animated-vector-drawable-23.4.0" level="project" />
+    <orderEntry type="library" name="com.github.SandroMachado:openalpr-android-1.1.2" level="project" />
     <orderEntry type="library" name="android-android-23" level="project" />
   </component>
 </module>
